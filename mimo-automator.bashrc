@@ -50,6 +50,11 @@ function getTokenToIotxInputPrice() {
   hex2dec `ioctl action read $exchange -b d458a2d1${amount}`
 }
 
+# input:
+#    1 - exchange -  address for token pair exchange
+#    2 - token_sold - amount of token to be sold
+#    3 - min_iotx - minimum amount of coin in *RAU* to buy
+# output - none
 function tokenToIotxSwapInput() {
   exchange=$1
   token_sold=`dec2hex $2`
@@ -58,7 +63,11 @@ function tokenToIotxSwapInput() {
   ioctl contract invoke bytecode $exchange 10dc202f${token_sold}${min_iotx}${dl}
 }
 
-
+# input:
+#    1 - exchange -  address for token pair exchange
+#    2 - iotx_sold - amount of coin in IOTX to sell
+#    3 - min_token - minimum amount of token to buy
+# output - none
 function iotxToTokenSwapInput() {
   exchange=$1
   iotx_sold=$2
@@ -66,7 +75,6 @@ function iotxToTokenSwapInput() {
   dl=`deadline`
   ioctl contract invoke bytecode $exchange eecd096a${min_token}${dl} ${iotx_sold}
 }
-
 
 # input:
 #    1 - exchange address for token pair exchange
@@ -87,7 +95,8 @@ function addLiquidity() {
 #    1 - exchange address for token pair exchange
 #    2 - amount - liquidity to remove (in decimal)
 #    3 - min-iotx (in decimal)
-#    4 -
+#    4 - minimum_tokens
+# output - none
 function removeLiquidity() {
   exchange=$1
   amount=`dec2hex $2`
