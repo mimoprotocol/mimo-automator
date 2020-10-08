@@ -50,6 +50,14 @@ function getTokenToIotxInputPrice() {
   hex2dec `ioctl action read $exchange -b d458a2d1${amount}`
 }
 
+# get bytecode for TokenToIotxSwapInput
+function byteCodeTokenToIotxSwapInput() {
+  token_sold=`dec2hex $1`
+  min_iotx=`dec2hex $2`
+  dl=`deadline`
+  echo 10dc202f${token_sold}${min_iotx}${dl}
+}
+
 # input:
 #    1 - exchange -  address for token pair exchange
 #    2 - token_sold - amount of token to be sold
@@ -57,10 +65,14 @@ function getTokenToIotxInputPrice() {
 # output - none
 function tokenToIotxSwapInput() {
   exchange=$1
-  token_sold=`dec2hex $2`
-  min_iotx=`dec2hex $3`
+  ioctl contract invoke bytecode $exchange `byteCodeTokenToIotxSwapInput $2 $3` -l 500000
+}
+
+
+function byteCodeIotxToTokenSwapInput() {
+  min_token=`dec2hex $1`
   dl=`deadline`
-  ioctl contract invoke bytecode $exchange 10dc202f${token_sold}${min_iotx}${dl}
+  echo eecd096a${min_token}${dl}
 }
 
 # input:
@@ -70,10 +82,7 @@ function tokenToIotxSwapInput() {
 # output - none
 function iotxToTokenSwapInput() {
   exchange=$1
-  iotx_sold=$2
-  min_token=`dec2hex $3`
-  dl=`deadline`
-  ioctl contract invoke bytecode $exchange eecd096a${min_token}${dl} ${iotx_sold}
+  ioctl contract invoke bytecode $exchange `byteCodeIotxToTokenSwapInput $3` $2 -l 500000
 }
 
 # input:
