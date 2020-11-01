@@ -19,7 +19,9 @@ function deadline() {
 # input: number in decimal
 # output: number in hex (uint256)
 function dec2hex() {
-  echo "ibase=A;obase=16;$1" | bc | xargs -0 -I h printf "%065s" h
+  zeros="0000000000000000000000000000000000000000000000000000000000000000"
+  amount=`echo "ibase=A;obase=16;$1" | bc`
+  printf "%s%s" ${zeros:${#amount}} $amount
 }
 
 # hex to decimal conversion in bigint
